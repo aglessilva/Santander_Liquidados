@@ -7,11 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConversorToByte", "Converso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MalhaToByte", "MalhaToByte\MalhaToByte.csproj", "{650F4116-E46C-4983-AC46-4634ED9B6B08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Santander_Duplicado", "Santander_Duplicado\Santander_Duplicado.csproj", "{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Santander_Paralisados", "Santander_Paralisados\Santander_Paralisados.csproj", "{C2420B63-FB86-40C4-8234-23141F6FC4FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Santander_Ponteiro", "Santander_Ponteiro\Santander_Ponteiro.csproj", "{A91973A8-52D1-45FF-98AD-3404B34D2268}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Santander_Duplicado", "Santander_Duplicado\Santander_Duplicado.csproj", "{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +32,12 @@ Global
 		{650F4116-E46C-4983-AC46-4634ED9B6B08}.Homolog|Any CPU.Build.0 = Homolog|Any CPU
 		{650F4116-E46C-4983-AC46-4634ED9B6B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{650F4116-E46C-4983-AC46-4634ED9B6B08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Homolog|Any CPU.ActiveCfg = Release|Any CPU
+		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Homolog|Any CPU.Build.0 = Release|Any CPU
+		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2420B63-FB86-40C4-8234-23141F6FC4FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2420B63-FB86-40C4-8234-23141F6FC4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2420B63-FB86-40C4-8234-23141F6FC4FF}.Homolog|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,12 +50,6 @@ Global
 		{A91973A8-52D1-45FF-98AD-3404B34D2268}.Homolog|Any CPU.Build.0 = Release|Any CPU
 		{A91973A8-52D1-45FF-98AD-3404B34D2268}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A91973A8-52D1-45FF-98AD-3404B34D2268}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Homolog|Any CPU.ActiveCfg = Release|Any CPU
-		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Homolog|Any CPU.Build.0 = Release|Any CPU
-		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E90F3F0B-C1E4-43AA-B79E-AEBB0A79ACF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
