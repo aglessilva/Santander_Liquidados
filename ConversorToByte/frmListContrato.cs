@@ -3,14 +3,10 @@ using ConversorToByte.DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ConversorToByte
@@ -35,7 +31,12 @@ namespace ConversorToByte
             dataGridViewContract.Enabled = (obj.IsAtivo || obj.IsGestorApp);
 
             ValidaPermissao(obj);
-            List<FileSafe> lst = fsf.GetFilesSafe(null);
+            BindGrid();
+        }
+
+        void BindGrid()
+        {
+            List<FileSafe> lst = fsf.GetFilesAll(null, 'P');
             dataGridViewContract.AutoGenerateColumns = false;
             dataGridViewContract.DataSource = lst.ToList();
         }
@@ -63,29 +64,32 @@ namespace ConversorToByte
                 saveFile.Filter = "Contrato|*.pdf";
 
                 fsf = new FileSafeOperations();
-                List<FileSafe> fileSaves = fsf.DownloadFile(obj.NameContract);
+                List<FileSafe> fileSaves = fsf.DownloadFile(obj.T16);
 
-                saveFile.FileName = obj.NameContract;
+                if (fileSaves.Count == 0)
+                    return;
+
+                saveFile.FileName = obj.T16;
 
                 if (saveFile.ShowDialog() == DialogResult.OK)
                 {
-                   string _path = new FileInfo(saveFile.FileName).DirectoryName + @"\" + obj.NameContract;
+                    string _path = new FileInfo(saveFile.FileName).DirectoryName + @"\" + obj.T16;
 
                     if (Directory.Exists(_path))
                         Directory.Delete(_path, true);
 
                     Directory.CreateDirectory(_path);
 
-                    for (int i = 0; i < fileSaves.Count; i++)
+                    foreach (FileSafe fileSafe in fileSaves)
                     {
-                        if (fileSaves[i].FileEncryption != null)
+                        if (fileSafe.EncryptedFile != null)
                         {
-                            using (BinaryWriter writer = new BinaryWriter(File.Open(_path + @"\" + obj.NameContract + fileSaves[i].NameContract + ".pdf", FileMode.Create)))
-                            { writer.Write(fileSaves[i].FileEncryption); }
+                            using (BinaryWriter writer = new BinaryWriter(File.Open(_path + @"\" + obj.T16 + fileSafe.PersonName + ".pdf", FileMode.Create)))
+                            { writer.Write(fileSafe.EncryptedFile); }
                         }
                     }
-                   
-                    if (MessageBox.Show(string.Format("Deseja abrir o diretório onde o contrato ({0}) foi salvo?", obj.NameContract), "Contratos Liquidados", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+
+                    if (MessageBox.Show(string.Format("Deseja abrir o diretório onde o contrato ({0}) foi salvo?", obj.T16), "Contratos Liquidados", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                     {
                         Cursor.Current = Cursors.WaitCursor;
                         Process.Start("explorer.exe", _path);
@@ -98,8 +102,7 @@ namespace ConversorToByte
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewImageColumn && e.RowIndex >= 0 && e.ColumnIndex == 4)
             {
                 FileSafe obj = (FileSafe)dataGridViewContract.Rows[e.RowIndex].DataBoundItem;
-                AbrirContrato(obj.NameContract, null, chkContratosAtivos.Checked);
-
+                AbrirContrato(obj.T16, "16");
             }
 
             // TELA 18
@@ -107,7 +110,7 @@ namespace ConversorToByte
             {
                 FileSafe obj = (FileSafe)dataGridViewContract.Rows[e.RowIndex].DataBoundItem;
                 if (!string.IsNullOrWhiteSpace(obj.T18))
-                    AbrirContrato(obj.NameContract, "18");
+                    AbrirContrato(obj.T16, "18");
             }
 
             // TELA 20
@@ -115,128 +118,74 @@ namespace ConversorToByte
             {
                 FileSafe obj = (FileSafe)dataGridViewContract.Rows[e.RowIndex].DataBoundItem;
                 if (!string.IsNullOrWhiteSpace(obj.T20))
-                    AbrirContrato(obj.NameContract, "20");
+                    AbrirContrato(obj.T16, "20");
             }
 
-            // TELA 125
+            // TELA 25
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewImageColumn && e.RowIndex >= 0 && e.ColumnIndex == 7)
             {
                 FileSafe obj = (FileSafe)dataGridViewContract.Rows[e.RowIndex].DataBoundItem;
                 if (!string.IsNullOrWhiteSpace(obj.T25))
-                    AbrirContrato(obj.NameContract, "25");
+                    AbrirContrato(obj.T16, "25");
             }
         }
 
-        void AbrirContrato(string _idContract, string _tela, bool _isAtivo = false)
+        void AbrirContrato(string _Contract, string _tela)
         {
             fsf = new FileSafeOperations();
-            FileSafe _file = fsf.GetFileSafe(_idContract, _tela, _isAtivo);
+            FileSafe _file = fsf.GetFileSafe(_Contract, _tela);
+
+            _file.T16 = _Contract;
             frmpdf _frmPdf = new frmpdf(_file);
             _frmPdf.ShowDialog();
         }
 
         private void btnLimpar_Click(object sender, EventArgs e)
         {
+            radioTypeContract.Checked = true;
+            maskedTextBoxDataIni.Text = string.Empty;
+            maskedTextBoxDataFim.Text = string.Empty;
             textBoxContratocpf.Text = string.Empty;
             textBoxContratocpf.Focus();
+            BindGrid();
         }
 
         private void textBoxContratocpf_TextChanged(object sender, EventArgs e)
         {
-            if (!chkContratosAtivos.Checked)
+            if (textBoxContratocpf.Text.Length >= 4)
             {
-                if (textBoxContratocpf.Text.Length > 3)
-                {
-                    dataGridViewContract.DataSource = null;
-                    List<FileSafe> lst = fsf.GetFilesSafe(_contractCpf: textBoxContratocpf.Text);
-                    dataGridViewContract.DataSource = lst.ToList();
-                }
-                else
-                    if (dataGridViewContract.Rows.Count < 50 && textBoxContratocpf.Text.Length < 3)
-                {
-                    dataGridViewContract.DataSource = null;
-                    List<FileSafe> lst = fsf.GetFilesSafe(null);
-                    dataGridViewContract.DataSource = lst.ToList();
-                }
-            }
-            else
-            {
-                if (textBoxContratocpf.Text.Length > 3)
-                {
-                    dataGridViewContract.DataSource = null;
-                    List<FileSafe> lst = fsf.GetFilesAll(textBoxContratocpf.Text.Trim());
-                    dataGridViewContract.DataSource = lst.ToList();
-                }
-                else
-                    if (dataGridViewContract.Rows.Count < 50 && textBoxContratocpf.Text.Length < 3)
-                {
-                    dataGridViewContract.DataSource = null;
-                    List<FileSafe> lst = fsf.GetFilesAll(null);
-                    dataGridViewContract.DataSource = lst.ToList();
-
-                }
-            }
-        }
-
-
-        private void addUsuarioToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FrmAddUsuariosAD f = new FrmAddUsuariosAD();
-            f.ShowDialog();
-        }
-
-        private void chkContratosAtivos_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkContratosAtivos.Checked)
-            {
-
-                string[] col = { "T18", "T20", "T25" };
-                int indiceCol = 5;
-                foreach (var item in col)
-                {
-
-                    DataGridViewImageColumn dataGridViewImageColumnT18 = new DataGridViewImageColumn()
-                    {
-                        HeaderText = item,
-                        Image = ((System.Drawing.Image)(new ComponentResourceManager(typeof(frmListContrato)).GetObject("Vizualizar.Image"))),
-                        MinimumWidth = 5,
-                        Width = 30,
-                        ImageLayout = DataGridViewImageCellLayout.Zoom,
-                    };
-
-                    dataGridViewContract.Columns.Insert(indiceCol, dataGridViewImageColumnT18);
-                    indiceCol++;
-                }
-
+                RadioButton radioButton = groupBox1.Controls.OfType<RadioButton>().FirstOrDefault(chk => chk.Checked);
                 dataGridViewContract.DataSource = null;
-                List<FileSafe> lst = fsf.GetFilesAll(textBoxContratocpf.Text.Length > 3 ? textBoxContratocpf.Text.Trim() : null);
+                List<FileSafe> lst = fsf.GetFilesAll(textBoxContratocpf.Text, Convert.ToChar(radioButton.Text.ToUpper().Substring(0, 1)), RetonaData());
                 dataGridViewContract.DataSource = lst.ToList();
             }
             else
             {
-                for (int i = 7; i > 4; i--)
-                    dataGridViewContract.Columns.RemoveAt(i);
-
-                dataGridViewContract.DataSource = null;
-                List<FileSafe> lst = fsf.GetFilesSafe(textBoxContratocpf.Text.Length > 3 ? textBoxContratocpf.Text.Trim() : null);
-                dataGridViewContract.DataSource = lst.ToList();
+                if (dataGridViewContract.Rows.Count != 100)
+                {
+                    RadioButton radioButton = groupBox1.Controls.OfType<RadioButton>().FirstOrDefault(chk => chk.Checked);
+                    dataGridViewContract.DataSource = null;
+                    List<FileSafe> lst = fsf.GetFilesAll(textBoxContratocpf.Text, Convert.ToChar(radioButton.Text.ToUpper().Substring(0, 1)), RetonaData());
+                    dataGridViewContract.DataSource = lst.ToList();
+                }
             }
+
         }
 
         private void dataGridViewContract_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-
-            if (chkContratosAtivos.Checked)
+            try
             {
                 var senderGrid = (DataGridView)sender;
                 foreach (DataGridViewRow item in senderGrid.Rows)
                 {
                     FileSafe obj = (FileSafe)item.DataBoundItem;
-                    if (string.IsNullOrEmpty(obj.T25))
+
+                    if (string.IsNullOrEmpty(obj.T18))
                     {
-                        if (senderGrid.Columns[7] is DataGridViewImageColumn && item.Index >= 0)
+                        if (senderGrid.Columns[5] is DataGridViewImageColumn && item.Index >= 0)
                         {
-                            item.Cells[7].Value = Properties.Resources.Childish_Cross_24996;
+                            item.Cells[5].Value = Properties.Resources.Childish_Cross_24996;
                         }
                     }
 
@@ -248,16 +197,129 @@ namespace ConversorToByte
                         }
                     }
 
-                    if (string.IsNullOrEmpty(obj.T18))
+                    if (string.IsNullOrEmpty(obj.T25))
                     {
-                        if (senderGrid.Columns[5] is DataGridViewImageColumn && item.Index >= 0)
+                        if (senderGrid.Columns[7] is DataGridViewImageColumn && item.Index >= 0)
                         {
-                            item.Cells[5].Value = Properties.Resources.Childish_Cross_24996;
+                            item.Cells[7].Value = Properties.Resources.Childish_Cross_24996;
                         }
                     }
 
+                    if (string.IsNullOrEmpty(obj.T34))
+                    {
+                        if (senderGrid.Columns[8] is DataGridViewImageColumn && item.Index >= 0)
+                        {
+                            item.Cells[8].Value = Properties.Resources.Childish_Cross_24996;
+                        }
+                    }
                 }
             }
+            catch (Exception exAddRow)
+            {
+                string _err = exAddRow.Message;
+            }
+        }
+
+
+        void GetTypeContract(string _parametro, char _typeContract, DateTime[] _dataParam =  null)
+        {
+            dataGridViewContract.DataSource = null;
+            List<FileSafe> lst = fsf.GetFilesAll(_parametro, _typeContract, _dataParam);
+            dataGridViewContract.DataSource = lst.ToList();
+        }
+
+        DateTime[] RetonaData()
+        {
+            DateTime[] dataParam = new DateTime[2];
+            dataParam[0] = maskedTextBoxDataIni.Text.Trim().Length == 10 ? Convert.ToDateTime(maskedTextBoxDataIni.Text.Trim()) : (DateTime.Now.AddDays(-20000).Date);
+            dataParam[1] = maskedTextBoxDataFim.Text.Length == 10 ? Convert.ToDateTime(maskedTextBoxDataFim.Text) : DateTime.Now.Date;
+            return dataParam;
+        }
+
+        private void radioAtivos_Click(object sender, EventArgs e)
+        {
+            string _paramentro = string.IsNullOrWhiteSpace(textBoxContratocpf.Text) ? null : textBoxContratocpf.Text;
+            GetTypeContract(_paramentro , Convert.ToChar(radioAtivos.Text.ToUpper().Substring(0, 1)),RetonaData());
+        }
+
+        private void radioTypeContract_Click(object sender, EventArgs e)
+        {
+            string _paramentro = string.IsNullOrWhiteSpace(textBoxContratocpf.Text) ? null : textBoxContratocpf.Text;
+            GetTypeContract(_paramentro, Convert.ToChar(radioTypeContract.Text.ToUpper().Substring(0, 1)), RetonaData());
+        }
+
+        private void radioLiquidados_Click(object sender, EventArgs e)
+        {
+            string _paramentro = string.IsNullOrWhiteSpace(textBoxContratocpf.Text) ? null : textBoxContratocpf.Text;
+            GetTypeContract(_paramentro, Convert.ToChar(radioLiquidados.Text.ToUpper().Substring(0, 1)), RetonaData());
+        }
+
+        private void addUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmAddUsuariosAD f = new FrmAddUsuariosAD();
+            f.ShowDialog();
+        }
+
+        private void addContratosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmAddContratos frm = new frmAddContratos();
+            frm.ShowDialog();
+        }
+
+        private void maskedTextBoxDataIni_TextChanged(object sender, EventArgs e)
+        {
+            if (maskedTextBoxDataIni.Text.Length == 10)
+            {
+                DateTime[] _dataInicial = RetonaData();
+                if (!DateTime.TryParse(_dataInicial[0].ToShortDateString(), out _dataInicial[0]))
+                {
+                    MessageBox.Show($"Data {maskedTextBoxDataIni.Text.Trim()} de inicio inválida! ", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    return;
+                }
+
+                RadioButton radioButton = groupBox1.Controls.OfType<RadioButton>().FirstOrDefault(chk => chk.Checked);
+                dataGridViewContract.DataSource = null;
+                List<FileSafe> lst = fsf.GetFilesAll(textBoxContratocpf.Text, Convert.ToChar(radioButton.Text.ToUpper().Substring(0, 1)), RetonaData());
+                dataGridViewContract.DataSource = lst.ToList();
+                maskedTextBoxDataFim.Focus();
+                return;
+            }
+
+            if (Regex.Replace(maskedTextBoxDataIni.Text, @"[^0-9$]", "").Length == 0 && !string.IsNullOrWhiteSpace(textBoxContratocpf.Text) )
+            {
+                RadioButton radioButton = groupBox1.Controls.OfType<RadioButton>().FirstOrDefault(chk => chk.Checked);
+                dataGridViewContract.DataSource = null;
+                List<FileSafe> lst = fsf.GetFilesAll(textBoxContratocpf.Text, Convert.ToChar(radioButton.Text.ToUpper().Substring(0, 1)), RetonaData());
+                dataGridViewContract.DataSource = lst.ToList();
+            }
+        }
+
+        private void maskedTextBoxDataFim_TextChanged(object sender, EventArgs e)
+        {
+
+            if (maskedTextBoxDataFim.Text.Length == 10)
+            {
+                DateTime[] _dataInicial = RetonaData();
+                if (!DateTime.TryParse(_dataInicial[1].ToShortDateString(), out _dataInicial[1]))
+                {
+                    MessageBox.Show($"Data {maskedTextBoxDataFim.Text.Trim()} Final inválida! ", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    return;
+                }
+
+                RadioButton radioButton = groupBox1.Controls.OfType<RadioButton>().FirstOrDefault(chk => chk.Checked);
+                dataGridViewContract.DataSource = null;
+                List<FileSafe> lst = fsf.GetFilesAll(textBoxContratocpf.Text, Convert.ToChar(radioButton.Text.ToUpper().Substring(0, 1)), RetonaData());
+                dataGridViewContract.DataSource = lst.ToList();
+            }
+
+            if (Regex.Replace(maskedTextBoxDataFim.Text, @"[^0-9$]", "").Length == 0 && !string.IsNullOrWhiteSpace(textBoxContratocpf.Text))
+            {
+                RadioButton radioButton = groupBox1.Controls.OfType<RadioButton>().FirstOrDefault(chk => chk.Checked);
+                dataGridViewContract.DataSource = null;
+                List<FileSafe> lst = fsf.GetFilesAll(textBoxContratocpf.Text, Convert.ToChar(radioButton.Text.ToUpper().Substring(0, 1)), RetonaData());
+                dataGridViewContract.DataSource = lst.ToList();
+            }
+
         }
     }
 }

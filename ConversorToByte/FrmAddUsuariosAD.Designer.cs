@@ -67,7 +67,7 @@
             this.groupBox1.Controls.Add(this.btnPesquisar);
             this.groupBox1.Location = new System.Drawing.Point(12, 11);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(451, 111);
+            this.groupBox1.Size = new System.Drawing.Size(550, 111);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Adicionar novo usuário";
@@ -81,9 +81,9 @@
             this.pnlUser.Controls.Add(this.lblEmail);
             this.pnlUser.Controls.Add(this.lblNome);
             this.pnlUser.Enabled = false;
-            this.pnlUser.Location = new System.Drawing.Point(171, 12);
+            this.pnlUser.Location = new System.Drawing.Point(200, 12);
             this.pnlUser.Name = "pnlUser";
-            this.pnlUser.Size = new System.Drawing.Size(274, 92);
+            this.pnlUser.Size = new System.Drawing.Size(340, 92);
             this.pnlUser.TabIndex = 7;
             // 
             // label2
@@ -180,12 +180,12 @@
             this.Email,
             this.IsGestorApp,
             this.Excluir});
-            this.DataGridViewUsuario.Location = new System.Drawing.Point(12, 191);
+            this.DataGridViewUsuario.Location = new System.Drawing.Point(12, 180);
             this.DataGridViewUsuario.Name = "DataGridViewUsuario";
             this.DataGridViewUsuario.ReadOnly = true;
             this.DataGridViewUsuario.RowHeadersVisible = false;
             this.DataGridViewUsuario.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DataGridViewUsuario.Size = new System.Drawing.Size(451, 312);
+            this.DataGridViewUsuario.Size = new System.Drawing.Size(550, 317);
             this.DataGridViewUsuario.TabIndex = 3;
             this.DataGridViewUsuario.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewUsuario_CellContentClick_1);
             // 
@@ -198,7 +198,6 @@
             this.Login.Name = "Login";
             this.Login.ReadOnly = true;
             this.Login.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Login.Width = 65;
             // 
             // Usuario
             // 
@@ -208,7 +207,7 @@
             this.Usuario.HeaderText = "Usuário";
             this.Usuario.Name = "Usuario";
             this.Usuario.ReadOnly = true;
-            this.Usuario.Width = 160;
+            this.Usuario.Width = 200;
             // 
             // Email
             // 
@@ -218,7 +217,7 @@
             this.Email.HeaderText = "E-Mail";
             this.Email.Name = "Email";
             this.Email.ReadOnly = true;
-            this.Email.Width = 175;
+            this.Email.Width = 200;
             // 
             // IsGestorApp
             // 
@@ -248,7 +247,7 @@
             this.textBoxPesquisa.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
             this.textBoxPesquisa.Location = new System.Drawing.Point(12, 141);
             this.textBoxPesquisa.Name = "textBoxPesquisa";
-            this.textBoxPesquisa.Size = new System.Drawing.Size(405, 35);
+            this.textBoxPesquisa.Size = new System.Drawing.Size(510, 35);
             this.textBoxPesquisa.TabIndex = 4;
             this.textBoxPesquisa.TextChanged += new System.EventHandler(this.textBoxPesquisa_TextChanged);
             // 
@@ -263,19 +262,24 @@
             // 
             // pnlSpinner
             // 
+            this.pnlSpinner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlSpinner.Controls.Add(this.label5);
             this.pnlSpinner.Controls.Add(this.pictureBox1);
             this.pnlSpinner.Location = new System.Drawing.Point(12, 0);
             this.pnlSpinner.Name = "pnlSpinner";
-            this.pnlSpinner.Size = new System.Drawing.Size(451, 125);
+            this.pnlSpinner.Size = new System.Drawing.Size(550, 125);
             this.pnlSpinner.TabIndex = 7;
             this.pnlSpinner.UseWaitCursor = true;
             this.pnlSpinner.Visible = false;
             // 
             // label5
             // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(172, 70);
+            this.label5.Location = new System.Drawing.Point(227, 70);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(110, 13);
             this.label5.TabIndex = 1;
@@ -284,8 +288,10 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = global::ConversorToByte.Properties.Resources.ajax_loader;
-            this.pictureBox1.Location = new System.Drawing.Point(209, 37);
+            this.pictureBox1.Location = new System.Drawing.Point(264, 37);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(31, 31);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -307,9 +313,9 @@
             // 
             this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.button1.Image = global::ConversorToByte.Properties.Resources.clear_filters_48_45590__1_;
-            this.button1.Location = new System.Drawing.Point(421, 140);
+            this.button1.Location = new System.Drawing.Point(522, 140);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(40, 38);
+            this.button1.Size = new System.Drawing.Size(40, 37);
             this.button1.TabIndex = 6;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -318,18 +324,19 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(467, 509);
-            this.Controls.Add(this.pnlSpinner);
+            this.ClientSize = new System.Drawing.Size(574, 509);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.textBoxPesquisa);
             this.Controls.Add(this.DataGridViewUsuario);
+            this.Controls.Add(this.pnlSpinner);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FrmAddUsuariosAD";
             this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = " Usuários - Adicionar / Ativar / Desativar";
             this.Load += new System.EventHandler(this.FrmAddUsuariosAD_Load);

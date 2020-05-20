@@ -19,19 +19,18 @@ namespace ConversorToByte
         private void frmpdf_Load(object sender, EventArgs e)
         {
 
-#if !DEBUG
-            _pathFilePdf = Directory.GetCurrentDirectory();
+//#if !DEBUG
+//            _pathFilePdf = Directory.GetCurrentDirectory();
 
-            if (!Directory.Exists($@"{_pathFilePdf}\tmp"))
-                Directory.CreateDirectory($@"{_pathFilePdf}\tmp");
-            _pathFilePdf = $@"{_pathFilePdf}\tmp";
-#else
-            _pathFilePdf = @"C:\Lixo\tmp";
-#endif
-
-           Text = "Contrato: " + _file.NameContract;
+//            if (!Directory.Exists($@"{_pathFilePdf}\tmp"))
+//                Directory.CreateDirectory($@"{_pathFilePdf}\tmp");
+//            _pathFilePdf = $@"{_pathFilePdf}\tmp";
+//#else
+//            _pathFilePdf = @"C:\Lixo\tmp";
+//#endif
+            Text = "Contrato: " + _file.T16;
             _pathFilePdf = Path.ChangeExtension(Path.GetTempFileName(), "pdf");
-            File.WriteAllBytes(_pathFilePdf, _file.FileEncryption);
+            File.WriteAllBytes(_pathFilePdf, _file.EncryptedFile);
             webBrowser1.Navigate(_pathFilePdf);
         }
 

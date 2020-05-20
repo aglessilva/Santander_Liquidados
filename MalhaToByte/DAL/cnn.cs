@@ -1,20 +1,15 @@
 ﻿using ConvertToByte.DAL;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MalhaToByte.DAL
 {
     public class Cnn
     {
 
-       public static string strConn = @"Password=01#$Sucesso;Persist Security Info=True;User ID=sa;Initial Catalog=DB_FileSafe;Data Source=NP2110929\SQLEXPRESS";
+       public static string strConn = @"Password=01#$Sucesso;Persist Security Info=True;User ID=sa;Initial Catalog=DbFileSafe;Data Source=NP2110929\SQLEXPRESS";
        
         public static string strConnTombamneto = @"Password=01#$Sucesso;Persist Security Info=True;User ID=sa;Initial Catalog=DB_Tombamento;Data Source=NP2110929\SQLEXPRESS";
 
@@ -89,11 +84,39 @@ namespace MalhaToByte.DAL
             }
         }
 
+        public static DataTable GetDataTable()
+        {
+            DataTable t = new DataTable();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(strConn))
+                {
+                    Parametriza("GET_DATATESTE");
+                    connection.Open();
+                    command.Connection = connection;
+
+                    SqlDataAdapter sqlData = new SqlDataAdapter(command);
+
+                    sqlData.Fill(t);
+                };
+            }
+
+           
+            
+            catch (Exception exErro)
+            {
+                string strErro = exErro.Message;
+                throw;
+            }
+
+
+            return t;
+        }
 
 
 
 
-        public static void FileStores(DataTable dataTable)
+        public static void FileStores(DataTable dataTable, string tableName)
         {
             using (SqlConnection connection = new SqlConnection(strConn))
             {
@@ -101,7 +124,7 @@ namespace MalhaToByte.DAL
                 {
                     SqlBulkCopy bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.TableLock | SqlBulkCopyOptions.FireTriggers | SqlBulkCopyOptions.UseInternalTransaction, null)
                     {
-                        DestinationTableName = "FileSafe"
+                        DestinationTableName = tableName
                     };
 
                     if (connection.State == ConnectionState.Closed)
@@ -112,8 +135,6 @@ namespace MalhaToByte.DAL
 
                     dataTable.Clear();
                 }
-
-
             
                 catch (SqlException ex)
                 {

@@ -10,12 +10,12 @@ namespace ConversorToByte.DALL
 {
     public class FileSafeData
     {
-        private conn cnx = null;
+        private Conn cnx = null;
         private SqlCommand command = null;
         
         public FileSafeData()
         {
-            cnx = new conn();
+            cnx = new Conn();
         }
 
         public List<FileSafe> DownloadFiles(string _contract)
@@ -27,7 +27,7 @@ namespace ConversorToByte.DALL
             {
                 command = cnx.Parametriza(Procedures.SP_DOWNLOAD_FILES);
                 command.Connection = command.Connection;
-                command.Parameters.Add(new SqlParameter("@CONTRACTNAME", string.IsNullOrWhiteSpace(_contract) ? null : _contract));
+                command.Parameters.Add(new SqlParameter("@PARAMETRO", string.IsNullOrWhiteSpace(_contract) ? null : _contract));
 
                 command.Connection.Open();
                 SqlDataReader dr = command.ExecuteReader();
@@ -36,18 +36,21 @@ namespace ConversorToByte.DALL
                 {
 
                     FileSafe obj = null;
-                    obj = new FileSafe() { NameContract = "_16", FileEncryption = (dr[0] == DBNull.Value) ? default(byte[]) : (byte[])dr[0] };
+                    obj = new FileSafe() { PersonName = "_16", EncryptedFile = (dr[0] == DBNull.Value) ? default(byte[]) : (byte[])dr[0] };
                     lst.Add(obj);
 
-                    obj = new FileSafe() { NameContract = "_18", FileEncryption = (dr[1] == DBNull.Value) ? default(byte[]) : (byte[])dr[1] };
+                    obj = new FileSafe() { PersonName = "_18", EncryptedFile = (dr[1] == DBNull.Value) ? default(byte[]) : (byte[])dr[1] };
                     lst.Add(obj);
 
-                    obj = new FileSafe() { NameContract = "_20", FileEncryption = (dr[2] == DBNull.Value) ? default(byte[]) : (byte[])dr[2] };
+                    obj = new FileSafe() { PersonName = "_20", EncryptedFile = (dr[2] == DBNull.Value) ? default(byte[]) : (byte[])dr[2] };
                     lst.Add(obj);
 
-                    obj = new FileSafe() { NameContract = "_25", FileEncryption = (dr[3] == DBNull.Value) ? default(byte[]) : (byte[])dr[3] };
+                    obj = new FileSafe() { PersonName = "_25", EncryptedFile = (dr[3] == DBNull.Value) ? default(byte[]) : (byte[])dr[3] };
                     lst.Add(obj);
-                   
+
+                    obj = new FileSafe() { PersonName = "_34", EncryptedFile = (dr[4] == DBNull.Value) ? default(byte[]) : (byte[])dr[4] };
+                    lst.Add(obj);
+
                 }
 
                 cnx.FecharConexao(command);
@@ -62,14 +65,21 @@ namespace ConversorToByte.DALL
             return lst;
         }
 
-        public List<FileSafe> GetFilesAll(string _contract)
+        public List<FileSafe> GetFilesAll(string _parametro, char _typeContract, DateTime[] _datasParam = null)
         {
             List<FileSafe> lst = new List<FileSafe>();
             try
             {
-                command = cnx.Parametriza(Procedures.SP_GET_FILES_T16_T18_t20_t25);
+                command = cnx.Parametriza(Procedures.SP_GET_FILES_T16_T18_T20_T25_T34);
                 command.Connection = command.Connection;
-                command.Parameters.Add(new SqlParameter("@CONTRACTNAME", string.IsNullOrWhiteSpace(_contract) ? null : _contract));
+                command.Parameters.Add(new SqlParameter("@PARAMETRO", string.IsNullOrWhiteSpace(_parametro) ? null : _parametro));
+                command.Parameters.Add(new SqlParameter("@TYPECONTRACT", _typeContract));
+
+                if (_datasParam != null)
+                {
+                    command.Parameters.Add(new SqlParameter("@DATEINI", _datasParam[0]));
+                    command.Parameters.Add(new SqlParameter("@DATEFIM", _datasParam[1]));
+                }
 
                 command.Connection.Open();
                 SqlDataReader dr = command.ExecuteReader();
@@ -80,11 +90,12 @@ namespace ConversorToByte.DALL
                    
                     obj = new FileSafe()
                     {
-                        NameContract = dr[0].ToString(),
-                        DocumentCpf = dr[1].ToString(),
-                        T18 = dr[2].ToString(),
-                        T20 = dr[3].ToString(),
-                        T25 = dr[4].ToString(),
+                        PersonName = dr[0].ToString(),
+                        PersonDocument = dr[1].ToString(),
+                        T16 = dr[2].ToString(),
+                        T18 = dr[3].ToString(),
+                        T20 = dr[4].ToString(),
+                        T25 = dr[5].ToString(),
                     };
 
                     lst.Add(obj);
@@ -102,16 +113,15 @@ namespace ConversorToByte.DALL
             return lst;
         }
 
-        public List<FileSafe> GetFileSafe(string _contratoCPF = null, string _tela = null, bool _isAtivo =  false)
+        public List<FileSafe> GetFileSafe(string _parametro , string _tela)
         {
             List<FileSafe> lst = new List<FileSafe>();
             try
             {
                 command = cnx.Parametriza(Procedures.SP_GET_FILES);
                 command.Connection = command.Connection;
-                command.Parameters.Add(new SqlParameter("@CONTRACTNAME", string.IsNullOrWhiteSpace(_contratoCPF) ? null : _contratoCPF));
-                command.Parameters.Add(new SqlParameter("@TELA", string.IsNullOrWhiteSpace(_tela) ? null : _tela));
-                command.Parameters.Add(new SqlParameter("@ISATIVO", _isAtivo));
+                command.Parameters.Add(new SqlParameter("@PARAMETRO", string.IsNullOrWhiteSpace(_parametro) ? null : _parametro));
+                command.Parameters.Add(new SqlParameter("@TELA", _tela));
 
                 command.Connection.Open();
                 SqlDataReader dr = command.ExecuteReader();
@@ -119,19 +129,10 @@ namespace ConversorToByte.DALL
                 FileSafe obj = null;
                 while (dr.Read())
                 {
-                    if(string.IsNullOrWhiteSpace(_tela))
-                        obj = new FileSafe()
-                        {
-                            NameContract = dr[0].ToString(),
-                            DocumentCpf  = dr[1].ToString(),
-                            FileEncryption = (dr[2] == DBNull.Value) ? default(byte[]) : (byte[])dr[2] 
-                        };
-                    else
-                        obj = new FileSafe()
-                        {
-                            NameContract = dr[0].ToString(),
-                            FileEncryption = (dr[1] == DBNull.Value) ? default(byte[]) : (byte[])dr[1]
-                        };
+                    obj = new FileSafe()
+                    {
+                        EncryptedFile = (byte[])dr[0]
+                    };
 
                     lst.Add(obj);
                 }
@@ -148,7 +149,33 @@ namespace ConversorToByte.DALL
             return lst;
         }
 
+        public List<long> GetNumberContract(int _tela)
+        {
+            List<long> lst = new List<long>();
+            try
+            {
+                command = cnx.Parametriza(Procedures.SP_GET_NUMBER_CONTRACT);
+                command.Connection = command.Connection;
+                command.Parameters.Add(new SqlParameter("@TELA", _tela));
+                command.Connection.Open();
 
+                SqlDataReader dr = command.ExecuteReader();
+                long _numberContract  = 0;
+                while (dr.Read())
+                {
+                    _numberContract = Convert.ToInt64(dr[0].ToString());
+                    lst.Add(_numberContract);
+                }
+
+                cnx.FecharConexao(command);
+
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         public List<Users> GetUsers(string _userLogin = null)
         {
@@ -167,10 +194,10 @@ namespace ConversorToByte.DALL
                 {
                     obj = new Users()
                     {
-                        UserLogin = dr[2].ToString(),
-                        UserName = dr[4].ToString(),
-                        UserEmail = dr[3].ToString(),
-                        IsAtivo = Convert.ToBoolean(dr[1])
+                        UserName = dr[0].ToString(),
+                        UserLogin = dr[1].ToString(),
+                        UserEmail = dr[2].ToString(),
+                        IsAtivo = Convert.ToBoolean(dr[3])
                     };
 
                     lst.Add(obj);
@@ -217,8 +244,8 @@ namespace ConversorToByte.DALL
                 command = cnx.Parametriza(Procedures.SP_CHK_USER);
                 command.Connection = command.Connection;
                 command.Connection.Open();
-                command.Parameters.Add(new SqlParameter("@USERLOGIN", _user.UserLogin ));
-                
+                command.Parameters.Add(new SqlParameter("@USERLOGIN", _user.UserLogin));
+
                 ret = (int)command.ExecuteScalar();
 
                 cnx.FecharConexao(command);
@@ -228,10 +255,9 @@ namespace ConversorToByte.DALL
                     command = cnx.Parametriza(Procedures.SP_POST_USERS);
                     command.Connection = command.Connection;
                     command.Connection.Open();
+                    command.Parameters.Add(new SqlParameter("@USERNAME", _user.UserName.Trim()));
                     command.Parameters.Add(new SqlParameter("@USERLOGIN", _user.UserLogin.Trim()));
                     command.Parameters.Add(new SqlParameter("@USEREMAIL", _user.UserEmail.Trim()));
-                    command.Parameters.Add(new SqlParameter("@USERNAME", _user.UserName.Trim()));
-                    command.Parameters.Add(new SqlParameter("@ISGESTORAPP", false));
                     ret = command.ExecuteNonQuery();
                     cnx.FecharConexao(command);
                 }
@@ -257,7 +283,6 @@ namespace ConversorToByte.DALL
             
             SqlDataReader dr = command.ExecuteReader();
 
-
             while (dr.Read())
             {
                 obj.IsGestorApp = Convert.ToBoolean(dr[0]);
@@ -265,6 +290,17 @@ namespace ConversorToByte.DALL
             }
 
             return obj;
+        }
+
+        public void RemoveDuplicateRegister()
+        {
+            command = cnx.Parametriza(Procedures.SP_REMOVE_REGISTRO_DUPLICADOS);
+            command.Connection = command.Connection;
+            command.Connection.Open();
+            command.ExecuteNonQuery();
+            command.Connection.Dispose();
+            command.Connection.Close();
+
         }
     }
 }

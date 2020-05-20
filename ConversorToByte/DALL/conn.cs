@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ConversorToByte.DALL
 {
-    public  class conn
+    public  class Conn
     {
+        //public static string strConn = @"Password=01#$Sucesso;Persist Security Info=True;User ID=sa;Initial Catalog=DbFileSafe;Data Source=NP2110929\SQLEXPRESS";
+
         string strConn =  string.Empty;
         SqlCommand command = null;
-        public conn() 
+        public Conn() 
         {
             strConn = ConfigurationManager.ConnectionStrings[0].ToString();
             command = new SqlCommand();
@@ -34,12 +35,6 @@ namespace ConversorToByte.DALL
             _command.Dispose();
             _command.Clone();
         }
-
-
-
-
-
-
 
         public byte[] Pesquisars(string prop)
         {
@@ -86,6 +81,57 @@ namespace ConversorToByte.DALL
                 return ret;
             }
         }
-        
+
+        public  void FileStores(object parametro)
+        {
+            DataTable dataTable = (DataTable)parametro.GetType().GetProperty("item1").GetValue(parametro, null);
+            string tableName = (string)parametro.GetType().GetProperty("item2").GetValue(parametro, null);
+
+            using (SqlConnection connection = new SqlConnection(strConn))
+            {
+                try
+                {
+                    SqlBulkCopy bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.TableLock | SqlBulkCopyOptions.FireTriggers | SqlBulkCopyOptions.UseInternalTransaction, null)
+                    {
+                        DestinationTableName = tableName
+                    };
+
+                    if (connection.State == ConnectionState.Closed)
+                        connection.Open();
+
+                    bulkCopy.WriteToServer(dataTable);
+                    connection.Dispose();
+                    connection.Close();
+                    
+                    dataTable.Clear();
+                }
+
+                catch (SqlException ex)
+                {
+                    connection.Dispose();
+                    connection.Close();
+
+                    if (ex.Number.Equals(2627))
+                    {
+                        string[] texto = Regex.Replace(ex.Message, @"[^0-9$]+", " ").Split(' ');
+                        string _contract = texto.FirstOrDefault(r => Regex.IsMatch(r, @"(^\d{14,15}$)")).Trim();
+                        dataTable.Select($"NumberContract={_contract}").ToList().ForEach(r => r.Delete());
+
+                        var tab = new
+                        {
+                            item1 = dataTable,
+                            item2 = tableName,
+                        };
+
+                        FileStores(tab);
+                    }
+
+                    throw ex;
+                }
+
+            }
+
+        }
+
     }
 }

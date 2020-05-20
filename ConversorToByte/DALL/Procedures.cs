@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ConversorToByte.DALL
+﻿namespace ConversorToByte.DALL
 {
     public enum Procedures
     {
@@ -62,12 +56,23 @@ namespace ConversorToByte.DALL
         /// <summary>
         /// Seleciona todas as telas 16,18,20,25
         /// </summary>
-        SP_GET_FILES_T16_T18_t20_t25 = 10,
+        SP_GET_FILES_T16_T18_T20_T25_T34 = 10,
 
         /// <summary>
         /// Faz o  download do contrato de todas as telas
         /// </summary>
-        SP_DOWNLOAD_FILES
+        SP_DOWNLOAD_FILES = 11,
+
+        /// <summary>
+        /// Remove os registros duplicados das tabelas
+        /// </summary>
+        SP_REMOVE_REGISTRO_DUPLICADOS = 12,
+
+        /// <summary>
+        /// Retorna somente o numero de todos os contratos
+        /// </summary>
+        SP_GET_NUMBER_CONTRACT = 13
 
     }
+
 }

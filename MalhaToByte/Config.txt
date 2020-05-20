@@ -1,0 +1,11 @@
+﻿#===============INFORMAR NOS CAMPOS OS PARAMETROS===============#
+#
+# informe os caminhos dos diretorios dos contratos
+# OBS: para diretorios de rede, deve informar '\\'
+# EX: \\servidor\diretorio
+#
+#===============================================================#
+DIRETORIO-PARALIZADO: \\servidor\contratos_paralizados
+DIRETORIO-LIQUIDADOS: \\servidor\contratos_liquidados
+DIRETORIO-ATIVOS: \\servidor\contratos_ativos
+#===============================================================#

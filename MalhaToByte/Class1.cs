@@ -18,6 +18,11 @@ namespace ConvertToByte
     {
         static void Main(string[] args)
         {
+            string _erro = "Reasons of SQL Server Violation of Primary Key ( 20000133013297 )Constraint Error Code. The error violation of primary";
+            string[] texto = Regex.Replace(_erro, @"[^0-9$]+", " ").Split(' ');
+
+            _erro = texto.FirstOrDefault(r => Regex.IsMatch(r, @"(^\d{14,15}$)"));
+
 
             // GetTableExcel();
 

@@ -16,9 +16,10 @@ namespace ConvertToByte
         {
             DataTable table = null;
             DataRow dataRow = null;
+            string _tableBook = "FileSafe25";
 
             Console.WriteLine("Lendo contratos...");
-            string PathFileCompany = @"C:\@TombamentoV1_01\TOMBAMENTOS\";
+            string PathFileCompany = @"C:\@TombamentoV1_01\TOMBAMENTOS\TOMBAMENTO2020-02-14\2020-02-12\";
             try
             {
                 table = CriaTabelaPdf();
@@ -35,20 +36,20 @@ namespace ConvertToByte
 
                         dataRow = table.NewRow();
 
-                        dataRow["ContractName"] = _contract.Name.Split('_')[0];
-                        dataRow["FileEncryption"] = File.ReadAllBytes(_contract.FullName);
-                        dataRow["DateInput"] = DateTime.Now;
+                        dataRow["TypeContract"] = 'P';
+                        dataRow["NumberContract"] = _contract.Name.Split('_')[0];
+                        dataRow["EncryptedFile"] = File.ReadAllBytes(_contract.FullName);
 
                         table.Rows.Add(dataRow);
                         contador++;
                         _contract = null;
 
-                        if (contador == 10000)
+                        if (contador == 100)
                         {
                             totalContratos += contador;
 
                             Console.WriteLine($"Aguarde...\n\nTotal Arnazenado  {totalContratos} \n");
-                            Cnn.FileStores(table);
+                            Cnn.FileStores(table, _tableBook);
                             contador = 0;
                         }
 
@@ -69,7 +70,7 @@ namespace ConvertToByte
                 {
                     totalContratos += contador;
 
-                    Cnn.FileStores(table);
+                    Cnn.FileStores(table, _tableBook);
                     contador = 0;
                     table = null;
                 }
@@ -90,9 +91,9 @@ namespace ConvertToByte
         private static DataTable CriaTabelaPdf()
         {
             var table = new DataTable();
-            table.Columns.Add("ContractName", typeof(string));
-            table.Columns.Add("FileEncryption", typeof(byte[]));
-            table.Columns.Add("DateInput", typeof(DateTime));
+            table.Columns.Add("TypeContract", typeof(char));
+            table.Columns.Add("NumberContract", typeof(string));
+            table.Columns.Add("EncryptedFile", typeof(byte[]));
 
             return table;
         }

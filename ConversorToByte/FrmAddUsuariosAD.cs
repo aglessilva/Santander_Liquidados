@@ -154,7 +154,7 @@ namespace ConversorToByte
         {
             Users obj = new Users()
             {
-                UserLogin = textBoxLogin.Text,
+                UserLogin = textBoxLogin.Text.ToUpper(),
                 UserEmail = lblEmail.Text,
                 UserName = lblNome.Text
             };
@@ -171,8 +171,6 @@ namespace ConversorToByte
             textBoxLogin.Text = string.Empty;
             textBoxLogin.Focus();
             BindGrid();
-
-            
         }
 
 
@@ -206,7 +204,7 @@ namespace ConversorToByte
                 if (dataGridUser.Columns[e.ColumnIndex] is DataGridViewImageColumn && e.RowIndex >= 0 && e.ColumnIndex == 4)
                 {
                     Users obj = (Users)DataGridViewUsuario.Rows[e.RowIndex].DataBoundItem;
-                    if (MessageBox.Show($"Confirma a exclusão do usuário { obj.UserName } ?", "Confirmação de Exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    if (MessageBox.Show($"Confirmação de exclusão permanente do usuário\n { obj.UserName } ?", "Confirmação de Exclusão", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                         return;
 
                    fso.DltUser(obj.UserLogin);

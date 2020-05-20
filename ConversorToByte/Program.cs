@@ -17,6 +17,8 @@ namespace ConversorToByte
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new frmListContrato());
+            //Application.Run(new FrmAddUsuariosAD());
+            //Application.Run(new frmAddContratos());
         }
     }
 }

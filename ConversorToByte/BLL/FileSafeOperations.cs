@@ -22,10 +22,10 @@ namespace ConversorToByte.BLL
         /// </summary>
         /// <param name="_contractCpf">Filtro por contrato ou por numero de cpf do cliente</param>
         /// <returns>Retorna uma lista de arquivos binarizados</returns>
-        public List<FileSafe> GetFilesSafe(string _contractCpf = null)
+        public List<FileSafe> GetFilesSafe(string _parametro , string _tela)
         {
             FileSafeData fs = new FileSafeData();
-            List<FileSafe> lst = fs.GetFileSafe(_contractCpf);
+            List<FileSafe> lst = fs.GetFileSafe(_parametro, _tela);
             return lst;
         }
 
@@ -34,17 +34,17 @@ namespace ConversorToByte.BLL
         /// </summary>
         /// <param name="_contrato">codigo do registro</param>
         /// <returns>retorna um objeto preenchido</returns>
-        public FileSafe GetFileSafe(string _contrato = null, string _tela = null, bool _isAtivo = false)
+        public FileSafe GetFileSafe(string _parametro, string _tela)
         {
              FileSafeData fs = new FileSafeData();
-             FileSafe obj = fs.GetFileSafe(_contrato, _tela, _isAtivo).FirstOrDefault();
+             FileSafe obj = fs.GetFileSafe(_parametro, _tela).FirstOrDefault();
             return obj;
         }
 
-        public List<FileSafe> GetFilesAll(string _contract = null)
+        public List<FileSafe> GetFilesAll(string _parametro, char _typeContract, DateTime[] _datasParam = null)
         {
             FileSafeData fs = new FileSafeData();
-            List<FileSafe> lst = fs.GetFilesAll(_contract);
+            List<FileSafe> lst = fs.GetFilesAll(_parametro, _typeContract, _datasParam);
             return lst;
         }
 
@@ -77,6 +77,18 @@ namespace ConversorToByte.BLL
         {
             FileSafeData fs = new FileSafeData();
             return fs.CheckUser(_login);
+        }
+
+        public void RemoveDuplicateRegister()
+        {
+            FileSafeData fs = new FileSafeData();
+            fs.RemoveDuplicateRegister();
+        }
+
+        public List<long> GetNumberContract(int _tela)
+        {
+            FileSafeData fs = new FileSafeData();
+            return fs.GetNumberContract(_tela);
         }
     }
 }
