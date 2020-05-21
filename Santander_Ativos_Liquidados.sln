@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Santander_Paralisados", "Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Santander_Ponteiro", "Santander_Ponteiro\Santander_Ponteiro.csproj", "{A91973A8-52D1-45FF-98AD-3404B34D2268}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Santander_Password_tela34", "Santander_Password_tela34\Santander_Password_tela34.csproj", "{62D1103E-5D08-4C9D-9ACC-FD0610D0E52F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,12 @@ Global
 		{A91973A8-52D1-45FF-98AD-3404B34D2268}.Homolog|Any CPU.Build.0 = Release|Any CPU
 		{A91973A8-52D1-45FF-98AD-3404B34D2268}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A91973A8-52D1-45FF-98AD-3404B34D2268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D1103E-5D08-4C9D-9ACC-FD0610D0E52F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D1103E-5D08-4C9D-9ACC-FD0610D0E52F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D1103E-5D08-4C9D-9ACC-FD0610D0E52F}.Homolog|Any CPU.ActiveCfg = Release|Any CPU
+		{62D1103E-5D08-4C9D-9ACC-FD0610D0E52F}.Homolog|Any CPU.Build.0 = Release|Any CPU
+		{62D1103E-5D08-4C9D-9ACC-FD0610D0E52F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D1103E-5D08-4C9D-9ACC-FD0610D0E52F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
